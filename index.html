@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ThuisBuis Arkin</title>
+    <script type="module" src="elements.videomeister.js"></script>
+
+    <style>
+      body {
+        --RoadsVideoPink: #d50f67;
+        --RoadsVideoOrange: rgb(204, 102, 51);
+        --RoadsVideoYellow: #fcba00;
+        --RoadsVideoPlay: var(--RoadsVideoYellow);
+        --RoadsVideoCUEbackground: #black;
+        --RoadsVideoCUEcolor: var(--RoadsVideoYellow);
+        --RoadsVideoChaptercolor: var(--RoadsVideoYellow);
+        background-color: black;
+        font-family: Verdana;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <template id="roads-video-template1">
+        <style>
+          :host {
+            display: inline;
+            font-size: 0.85em;
+          }
+
+          [chapter] .container video::cue {
+            color: var(--RoadsVideoCUEcolor);
+            font-size: 6em;
+          }
+
+          video::cue {
+            font-size:1.5em;
+            color:yellow;
+          }
+
+          [chapter="0"] .container video::cue,
+          [chapter="1"] .container video::cue {
+            background: green;
+            color: var(--RoadsVideoCUEcolor);
+            font-size: 2em;
+          }
+          .container {
+            width: 98vw;
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 1em;
+            margin: 0 auto;
+            background: black;
+          }
+
+          .sidebar {
+            background: grey;
+          }
+
+          #title {
+            color: var(--RoadsVideoPlay);
+            font-weight: bold;
+            padding-bottom: 2px;
+            padding-left: 1em;
+            border-bottom: 1px solid grey;
+          }
+
+          .chapters {
+            float: left;
+            word-wrap: break-word;
+            padding: 10px;
+          }
+
+          .chapter--seen {
+            color: var(--RoadsVideoPlay);
+          }
+
+          [id*="chapter"] {
+            display: block;
+            padding: 2px 0;
+            font-size: 100%;
+          }
+
+          [id*="chapter"]:hover {
+            background-color: var(--RoadsVideoPlay);
+            color: black;
+            cursor: pointer;
+          }
+
+          .chapter--time {
+            font-size: 80%;
+          }
+
+          .chapter--title {
+            margin-left: 4px;
+          }
+
+          .time {
+            color: grey;
+            float: left;
+            height: auto;
+          }
+
+          .play-button {
+            --playbuttonSize: 40px;
+            float: left;
+            display: block;
+            margin: -5px 10px;
+            height: var(--playbuttonSize);
+            width: var(--playbuttonSize);
+            background-color: var(--RoadsVideoPlay);
+            border-radius: var(--playbuttonSize);
+            position: relative;
+          }
+
+          .play-button:hover {
+            cursor: pointer;
+          }
+
+          .play-button:hover:after {
+            border-color: transparent transparent transparent black;
+          }
+
+          .play-button:after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 10.5px;
+            left: 14px;
+            margin: 0 auto;
+            border-style: solid;
+            border-width: 9.5px 0 9.5px 17px;
+            border-color: transparent transparent transparent
+              rgba(255, 255, 255, 1);
+          }
+
+          .playing {
+            animation: pulsate 4s ease-out;
+            animation-iteration-count: infinite;
+          }
+
+          @-webkit-keyframes pulsate {
+            0% {
+              -webkit-transform: scale(1, 1);
+              opacity: 0.8;
+            }
+
+            50% {
+              -webkit-transform: scale(1.2, 1.2);
+              opacity: 1;
+            }
+
+            100% {
+              -webkit-transform: scale(1, 1);
+              opacity: 0.8;
+            }
+          }
+
+          @keyframes pulsate {
+            0% {
+              transform: scale(1, 1);
+              opacity: 0.8;
+            }
+
+            50% {
+              transform: scale(1.2, 1.2);
+              opacity: 1;
+            }
+
+            100% {
+              transform: scale(1, 1);
+              opacity: 0.8;
+            }
+          }
+
+          video{
+              width: -webkit-fill-available;
+              max-height:95vh;
+          }
+          video::-webkit-media-controls-fullscreen-button {
+            display: none;
+          }
+        </style>
+        <div class="container">
+          <div class="sidebar">
+            <div id="title">21</div>
+            <div class="chapters">Preloading video...</div>
+            <div>
+              <div class="play-button"></div>
+              <div class="time">00:00:00</div>
+            </div>
+          </div>
+          <video controls preload="auto" poster="">
+            <source src="./gebarsten_emmer.mp4" type="video/mp4" />
+            <track
+              kind="subtitles"
+              src="./gebarsten_emmer_en.vtt"
+              srclang="en"
+              label="The leaking bucket - English"
+              default="default"
+            />
+          </video>
+        </div>
+      </template>
+
+      <roads-video id="video" src="./gebarsten_emmer.mp4" title="De gebarsten emmer"></roads-video>
+
+    </div>
+  </body>
+</html>
