@@ -3,11 +3,15 @@
   <head>
     <title>ThuisBuis Arkin</title>
     <script type="module" src="elements.videomeister.js"></script>
+    <script
+      type="module"
+      src="https://flagmeister.github.io/elements.flagmeister.min.js"
+    ></script>
 
     <style>
       body {
         --ArkinYellow: #e7b813;
-        --ArkinGrey: darkslategrey;
+        --ArkinGrey: beige;
         --RoadsVideoPink: #d50f67;
         --RoadsVideoOrange: rgb(204, 102, 51);
         --RoadsVideoYellow: #fcba00;
@@ -29,6 +33,11 @@
       h5,
       h6 {
         color: var(--ArkinGrey);
+      }
+      #FlagSelector{
+        display: grid;
+        grid-template-columns: repeat(4,50px);
+        gap:1em;
       }
     </style>
   </head>
@@ -221,6 +230,12 @@
             />
             <track
               kind="subtitles"
+              src="./gebarsten_emmer_fr.vtt"
+              srclang="fr"
+              label="Francais"
+            />
+            <track
+              kind="subtitles"
               src="./gebarsten_emmer_jp.vtt"
               srclang="jp"
               label="Japanese"
@@ -229,14 +244,20 @@
         </div>
       </template>
       <h1>Arkin ThuisBuis - Prototype</h1>
-      <h3>Door: Roads Technology</h3>
-      <h5>Vertalingen: Rik, Vamara</h5>
+      <h3>Door: Roads Technology - vertalingen: Rik, Vamara</h3>
+      <div id="FlagSelector">
+        <flag-nl></flag-nl>
+        <flag-gb></flag-gb>
+        <flag-fr></flag-fr>
+        <flag-jp></flag-jp>
+      </div>
       <roads-video
         id="video"
         src="./gebarsten_emmer.mp4"
         title="De gebarsten emmer"
       >
         0.00 == Intro # 10.00 == Selma de Vries # 39.00 == De Gebarsten Emmer
+     # 240.00 == Afsluiting # 288 == NL vertaal fout
       </roads-video>
     </div>
   </body>
