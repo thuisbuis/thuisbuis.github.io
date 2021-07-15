@@ -6,6 +6,8 @@
 
     <style>
       body {
+        --ArkinYellow: #e7b813;
+        --ArkinGrey: darkslategrey;
         --RoadsVideoPink: #d50f67;
         --RoadsVideoOrange: rgb(204, 102, 51);
         --RoadsVideoYellow: #fcba00;
@@ -17,6 +19,16 @@
         font-family: Verdana;
         margin: 0;
         padding: 0;
+      }
+      h1 {
+        color: var(--ArkinYellow);
+      }
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        color: var(--ArkinGrey);
       }
     </style>
   </head>
@@ -36,8 +48,8 @@
           }
 
           video::cue {
-            font-size:1.5em;
-            color:yellow;
+            font-size: 1.5em;
+            color: yellow;
           }
 
           [chapter="0"] .container video::cue,
@@ -175,9 +187,9 @@
             }
           }
 
-          video{
-              width: -webkit-fill-available;
-              max-height:95vh;
+          video {
+            width: -webkit-fill-available;
+            max-height: 95vh;
           }
           video::-webkit-media-controls-fullscreen-button {
             display: none;
@@ -216,14 +228,16 @@
           </video>
         </div>
       </template>
- <h1>Arkin ThuisBuis - Prototype</h1>
- <h3>Door: Roads Technology</h3>
- <h5>Vertalingen: Rik, Vamara</h5>
-      <roads-video id="video" src="./gebarsten_emmer.mp4" title="De gebarsten emmer">
-      0.00 == Intro # 10.00 == Selma de Vries # 39.00 == De Gebarsten Emmer
-
+      <h1>Arkin ThuisBuis - Prototype</h1>
+      <h3>Door: Roads Technology</h3>
+      <h5>Vertalingen: Rik, Vamara</h5>
+      <roads-video
+        id="video"
+        src="./gebarsten_emmer.mp4"
+        title="De gebarsten emmer"
+      >
+        0.00 == Intro # 10.00 == Selma de Vries # 39.00 == De Gebarsten Emmer
       </roads-video>
-
     </div>
   </body>
 </html>
