@@ -100,25 +100,24 @@
       class extends HTMLElement {
         constructor() {
           super();
-          this.videofilename = params.get("video")||"gebarsten_emmer";
-          this.videolanguage = params.get("lang")||"nl";
+          // URL parameters
+          let params = new URLSearchParams(location.search);
+          this.videofilename = params.get("video") || "gebarsten_emmer";
+          this.videolanguage = params.get("lang") || "nl";
+          // Listeners
           this.removeListeners = [
             ...attachListeners(window),
             ...attachListeners(document),
             ...attachListeners(this),
           ];
-          let params = new URLSearchParams(location.search);
+          // init HTML
           let html = document
             .getElementById(this.nodeName)
-        .innerHTML
-            .replaceAll("[VIDEO]", this.videofilename)
+            .innerHTML.replaceAll("[VIDEO]", this.videofilename)
             .replaceAll("[LANG]", this.videolanguage);
-          // read HTML template
-          // get URL parameter [video]
-          // get URL parameter [lang]
-          // create innerHTML
-
+      
           this.attachShadow({ mode: "open" }).innerHTML = html;
+      
           this.currentChapter = 1;
           this.lastChapter = 0;
           this.initElement = true; // canplay event fires also on seek!
