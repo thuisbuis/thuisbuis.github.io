@@ -100,6 +100,8 @@
       class extends HTMLElement {
         constructor() {
           super();
+          this.videofilename = params.get("video")||"gebarsten_emmer";
+          this.videolanguage = params.get("lang")||"nl";
           this.removeListeners = [
             ...attachListeners(window),
             ...attachListeners(document),
@@ -109,8 +111,8 @@
           let html = document
             .getElementById(this.nodeName)
         .innerHTML
-            .replaceAll("[VIDEO]", params.get("video")||"gebarsten_emmer")
-            .replaceAll("[LANG]", params.get("lang")||"nl");
+            .replaceAll("[VIDEO]", this.videofilename)
+            .replaceAll("[LANG]", this.videolanguage);
           // read HTML template
           // get URL parameter [video]
           // get URL parameter [lang]
@@ -215,6 +217,10 @@
                 ],
               ],
             });
+            // Default captions
+            let track = this.$(`[srclang="${this.videolanguage}"]`);
+            track.setAttribute("default", "default");
+            // CHAPTERS
             this.chapters = this.innerHTML
               .split("#")
               .map((line) => line.trim().split("=="))
