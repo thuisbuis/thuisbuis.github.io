@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>ThuisBuis Arkin</title>
-    <script type="module" src="elements.videomeister.js"></script>
+    <script src="./elements.videomeister.js"></script>
     <script
       type="module"
       src="https://flagmeister.github.io/elements.flagmeister.min.js"
@@ -36,15 +36,21 @@
       }
       #FlagSelector{
         display: grid;
-        grid-template-columns: repeat(4,50px);
+        grid-template-columns: repeat(6,30px);
         gap:1em;
+        background:grey;
+        padding:.2em;
+        cursor:pointer;
+      }
+      roads-video{
+        width:70vh;
       }
     </style>
   </head>
 
   <body>
     <div class="container">
-      <template id="roads-video-template1">
+      <template id="ROADS-VIDEO">
         <style>
           :host {
             display: inline;
@@ -68,7 +74,7 @@
             font-size: 2em;
           }
           .container {
-            width: 98vw;
+            width: 100%;
             display: grid;
             grid-template-columns: 1fr 3fr;
             gap: 1em;
@@ -198,7 +204,7 @@
 
           video {
             width: -webkit-fill-available;
-            max-height: 95vh;
+            max-height: 70vh;
           }
           video::-webkit-media-controls-fullscreen-button {
             display: none;
@@ -214,31 +220,45 @@
             </div>
           </div>
           <video controls preload="auto" poster="">
-            <source src="./gebarsten_emmer.mp4" type="video/mp4" />
+            <source src="./[VIDEO].mp4" type="video/mp4" />
             <track
               kind="subtitles"
-              src="./gebarsten_emmer_nl.vtt"
+              src="./[VIDEO]_nl.vtt"
               srclang="nl"
               label="Nederlands"
             />
             <track
               kind="subtitles"
-              src="./gebarsten_emmer_en.vtt"
+              src="./[VIDEO]_en.vtt"
               srclang="en"
               label="English"
               default="default"
             />
             <track
               kind="subtitles"
-              src="./gebarsten_emmer_fr.vtt"
-              srclang="fr"
-              label="Francais"
+              src="./[VIDEO]_de.vtt"
+              srclang="de"
+              label="Deutsch"
+              default="default"
             />
             <track
               kind="subtitles"
-              src="./gebarsten_emmer_jp.vtt"
+              src="./[VIDEO]_pt.vtt"
+              srclang="pt"
+              label="Português"
+              default="default"
+            />
+            <track
+              kind="subtitles"
+              src="./[VIDEO]_fr.vtt"
+              srclang="fr"
+              label="Français"
+            />
+            <track
+              kind="subtitles"
+              src="./[VIDEO]_jp.vtt"
               srclang="jp"
-              label="Japanese"
+              label="日本"
             />
           </video>
         </div>
@@ -248,12 +268,13 @@
       <div id="FlagSelector">
         <flag-nl></flag-nl>
         <flag-gb></flag-gb>
+        <flag-de></flag-de>
         <flag-fr></flag-fr>
+        <flag-pt></flag-pt>
         <flag-jp></flag-jp>
       </div>
       <roads-video
         id="video"
-        src="./gebarsten_emmer.mp4"
         title="De gebarsten emmer"
       >
         0.00 == Intro # 10.00 == Selma de Vries # 39.00 == De Gebarsten Emmer
