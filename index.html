@@ -26,6 +26,7 @@
       }
       h1 {
         color: var(--ArkinYellow);
+        margin: 0;
       }
       h2,
       h3,
@@ -34,16 +35,19 @@
       h6 {
         color: var(--ArkinGrey);
       }
-      #FlagSelector{
+      #FlagSelector {
         display: grid;
-        grid-template-columns: repeat(6,30px);
-        gap:1em;
-        background:grey;
-        padding:.2em;
-        cursor:pointer;
+        grid-template-columns: repeat(6, 30px);
+        gap: 1em;
+        background: grey;
+        padding: 0.2em;
+        cursor: pointer;
       }
-      roads-video{
-        width:70vh;
+      #VideoData {
+        color: var(--ArkinYellow);
+      }
+      roads-video {
+        width: 70vh;
       }
     </style>
   </head>
@@ -77,7 +81,7 @@
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 3fr;
-            gap: 1em;
+            gap: 0.5em;
             margin: 0 auto;
             background: black;
           }
@@ -260,23 +264,24 @@
           </video>
         </div>
       </template>
-      <h1>Arkin ThuisBuis - Prototype</h1>
-      <h3>Door: Roads Technology - vertalingen: Rik, Vamara</h3>
-      <div id="FlagSelector">
-        <flag-nl></flag-nl>
-        <flag-gb></flag-gb>
-        <flag-de></flag-de>
-        <flag-fr></flag-fr>
-        <flag-pt></flag-pt>
-        <flag-jp></flag-jp>
-      </div>
-      <roads-video
-        id="video"
-        title="De gebarsten emmer"
-      >
-        0.00 == Intro # 10.00 == Selma de Vries # 39.00 == De Gebarsten Emmer
-     # 240.00 == Afsluiting # 288 == NL vertaal fout
-      </roads-video>
+      <video-manager>
+        <h1>Arkin ThuisBuis - Prototype</h1>
+        <div id="VideoData">[VideoData]</div>
+        <rt-languages>
+          <div id="FlagSelector">
+            <rt-flag lang="nl"></rt-flag>
+            <rt-flag lang="en"></rt-flag>
+            <rt-flag lang="de"></rt-flag>
+            <rt-flag lang="fr"></rt-flag>
+            <rt-flag lang="pt"></rt-flag>
+            <rt-flag lang="jp"></rt-flag>
+          </div>
+        </rt-languages>
+        <roads-video id="video" title="De gebarsten emmer1">
+          0.00 == Intro # 10.00 == Selma de Vries # 39.00 == De Gebarsten Emmer
+          # 240.00 == Afsluiting # 288 == NL vertaal fout
+        </roads-video>
+      </video-manager>
     </div>
   </body>
 </html>

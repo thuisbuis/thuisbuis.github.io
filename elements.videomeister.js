@@ -1,6 +1,9 @@
 !(() =>
-  // in IIFE so nothing in the global scope, no export either
-  {
+// in IIFE so nothing in the global scope, no export either
+{
+  const __DEFAULTVIDEO__ = "gebarsten_emmer";
+  const __TAG_VIDEO_MANAGER__ = "video-manager";
+
     let $ = (x, root = document) => root.getElementById(x);
     let createElement = (tag, content = {}, inject = false) => (
       (tag = document.createElement(tag, { is: content.is })),
@@ -71,12 +74,17 @@
         fullscreenchange	Fired when the player switches in or out of fullscreen mode.
      */
 
+    let log = function () {
+      let args = [...arguments];
+      console.log(`%c RT Video: ${args.shift()}`, "background:gold", ...args);
+    };
+
     let attachListeners = ({
       root = window,
-      log = function (evt) {
+      eventlog = function (evt) {
         let args = [...arguments];
         args.shift();
-        console.log(`%c RT Video: ${evt.type}`, "background:gold", ...args);
+        log("%c evt", "color:red", evt.type, ...args);
       },
       name = { [window]: "window", [document]: "document" }[root] ||
         root.nodeName,
@@ -86,24 +94,58 @@
         // ["readystatechange"],
       ],
     }) =>
-      events.map(([eventName, eventFunc = log]) => {
+      events.map(([eventName, eventFunc = eventlog]) => {
         let func = (evt) => {
-          log(evt);
+          eventlog(evt);
           return eventFunc(evt);
         };
         root.addEventListener(eventName, func);
         return () => root.removeEventListener(eventName, func);
       });
 
+    class RTElement extends HTMLElement {
+      constructor() {
+        super();
+        this.params = new URLSearchParams(location.search);
+      } // constructor
+      dispatch({
+        name = this.nodeName,
+        bubbles = true,
+        composed = true,
+        detail = {},
+        from = this,
+      }) {
+        from.dispatchEvent(
+          new CustomEvent(name, {
+            detail,
+            bubbles,
+            composed,
+          })
+        );
+      } // dispatch
+      closestElement(selector, base = this) {
+        function __closestFrom(el) {
+          if (!el || el === document || el === window) return null;
+          let found = el.closest(selector);
+          if (found) return found;
+          else __closestFrom(el.getRootNode().host);
+        }
+
+        return __closestFrom(base);
+      } // closestElement
+    }
+
     customElements.define(
       "roads-video",
-      class extends HTMLElement {
+      class extends RTElement {
         constructor() {
           super();
+
           // URL parameters
-          let params = new URLSearchParams(location.search);
-          this.videofilename = params.get("video") || "gebarsten_emmer";
-          this.videolanguage = params.get("lang") || "nl";
+          this.videofilename = this.params.get("video") || __DEFAULTVIDEO__;
+
+          this.videolanguage = this.params.get("lang") || "nl";
+          VideoData.innerHTML = `video= ${this.videofilename} - lang= ${this.videolanguage}`;
           // Listeners
           this.removeListeners = [
             ...attachListeners(window),
@@ -115,9 +157,9 @@
             .getElementById(this.nodeName)
             .innerHTML.replaceAll("[VIDEO]", this.videofilename)
             .replaceAll("[LANG]", this.videolanguage);
-      
+
           this.attachShadow({ mode: "open" }).innerHTML = html;
-      
+
           this.currentChapter = 1;
           this.lastChapter = 0;
           this.initElement = true; // canplay event fires also on seek!
@@ -126,7 +168,7 @@
           return this.shadowRoot.querySelector(selector);
         }
         title(txt) {
-          this.$("#title").innerHTML = txt + " " + this.getAttribute("title");
+          this.$("#title").innerHTML = txt;//+ " " + this.getAttribute("title");
         }
         play() {
           this.classList.add("playing");
@@ -156,10 +198,12 @@
         }
         connectedCallback() {
           window.setTimeout(() => {
+            let videoManager = this.closestElement(__TAG_VIDEO_MANAGER__);
+            videoManager.videofilename = this.videofilename;
             let $element = this;
             this.video = this.$("video");
             this.playbutton = this.$(".play-button");
-            this.title("Ready");
+            log("Ready");
             attachListeners({
               root: this.video,
               events: [
@@ -216,39 +260,64 @@
                 ],
               ],
             });
-            // Default captions
-            let track = this.$(`[srclang="${this.videolanguage}"]`);
-            track.setAttribute("default", "default");
-            // CHAPTERS
-            this.chapters = this.innerHTML
-              .split("#")
-              .map((line) => line.trim().split("=="))
-              .filter((x) => x[1])
-              .map(([time, title], idx) => {
-                let div = createElement("roads-video-chapter");
-                div.title = title;
-                div.setAttribute("time", time);
-                div.setAttribute("chapter", idx + 1);
-                this.lastChapter++;
-                return {
-                  chapterNr: idx + 1,
-                  time: parseFloat(time),
-                  title: title.trim(),
-                  div,
-                };
-              });
+            this.setDefaultTrack();
+            this.loadChapters("timecodes");
+            this.setLanguage();
+          }); // setTimeout
+        } // connectedCallback
+        setDefaultTrack(lang = this.videolanguage) {
+          let track = this.$(`[srclang="${lang}"]`);
+          if (track) track?.setAttribute("default", "default");
+          else log("No track", lang);
+        } //setDefaultTrack
+        loadChapters(str = this.innerHTML) {
+          if (this.params.get("tc") || str == "timecodes") {
+            let tc = Number(this.params.get("tc") || 30);
+            log(str);
+            let timecodes = "";
+            for (let timeseconds = 0; timeseconds < 600; timeseconds += tc) {
+              timecodes += `${String(timeseconds)} == ${String(
+                formatSecondsAsTime(timeseconds)
+              )} ##`;
+            }
+            str = timecodes;
+            log(str);
+          }
+          this.chapters = str
+            .split("#")
+            .map((line) => line.trim().split("=="))
+            .filter((x) => x[1])
+            .map(([time, title], idx) => {
+              let div = createElement("roads-video-chapter");
+              div.title = title;
+              div.setAttribute("time", time);
+              div.setAttribute("chapter", idx + 1);
+              this.lastChapter++;
+              return {
+                chapterNr: idx + 1,
+                time: parseFloat(time),
+                title: title.trim(),
+                div,
+              };
+            });
 
-            this.$(".chapters").innerHTML = "";
-            this.$(".chapters").append(
-              ...this.chapters.map((chapter) => chapter.div)
-            );
-          });
-        }
+          this.$(".chapters").innerHTML = "";
+          this.$(".chapters").append(
+            ...this.chapters.map((chapter) => chapter.div)
+          );
+        } //loadChapters
         disconnectedCallback() {
           this.removeListeners((removeFunc) => removeFunc());
         }
+        setLanguage(lang = this.videolanguage, subtitles = true) {
+          [...this.video.textTracks].forEach((track) => {
+            if (track.language == lang) track.mode = "showing";
+            // disabled,hidden,showing
+            else track.mode = "disabled";
+          });
+        }
       }
-    );
+    ); // define: roads-video
 
     customElements.define(
       "roads-video-chapter",
@@ -281,7 +350,48 @@
           });
         }
       }
-    );
+    ); // define: roads-video-chapter
+
+    const __EVENT_SET_LANGUAGE__ = "EventLanguage";
+
+    customElements.define(
+      "rt-flag",
+      class extends RTElement {
+        connectedCallback() {
+          let videoManager = this.closestElement(__TAG_VIDEO_MANAGER__);
+          let lang = this.getAttribute("lang");
+          let tag = `flag-${lang == "en" ? "gb" : lang}`; // use gb flag for english
+          let flag = document.createElement(tag);
+          this.append(flag);
+          this.onclick = () => {
+            this.dispatch({
+              name: __EVENT_SET_LANGUAGE__,
+              detail: lang,
+            });
+          };
+        }
+      }
+    ); // define: rt-flag
+
+    customElements.define(
+      __TAG_VIDEO_MANAGER__,
+      class extends RTElement {
+        set lang(lang) {
+          //set video language
+          let newlocation =
+            location.origin + `?video=${this.videofilename}&lang=${lang}`;
+          document.location = newlocation;
+        } // set video language
+        connectedCallback() {
+          this.addEventListener(__EVENT_SET_LANGUAGE__, (evt) => {
+            log(21, evt.detail);
+            this.lang = evt.detail;
+          });
+        }
+      }
+    ); // define: __TAG_VIDEO_MANAGER__
+
+    // end IIFE
   })({
-  /* inject default icons here */
+  // IIFE parameters
 });
