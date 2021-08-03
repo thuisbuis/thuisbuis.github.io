@@ -384,7 +384,6 @@
         } // set video language
         connectedCallback() {
           this.addEventListener(__EVENT_SET_LANGUAGE__, (evt) => {
-            log(21, evt.detail);
             this.lang = evt.detail;
           });
         }
